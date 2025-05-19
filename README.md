@@ -1,5 +1,10 @@
 # Parking_Info
 
+## installation
+```
+pip install -r requirements.txt
+```
+
 ## API 
 
 ### google maps API

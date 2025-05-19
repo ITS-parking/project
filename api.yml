@@ -1,0 +1,24 @@
+swagger: "2.0"
+info:
+  title: Parking Infomation
+  version: "0.0.0"
+  description: API spec about parking lot info on linebot
+basePath: /api/web
+tags:
+  - name: 測試
+    description: 測試類功能
+paths:
+  /ping:
+    get:
+      tags:
+        - 測試
+      summary: 測試用的 Ping API
+      description: 回傳 Pong!
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 成功回傳 Pong!
+          schema:
+            type: string
+            example: Pong!

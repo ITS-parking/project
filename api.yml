@@ -1,24 +1,177 @@
 swagger: "2.0"
+
 info:
-  title: Parking Infomation
-  version: "0.0.0"
-  description: API spec about parking lot info on linebot
-basePath: /api/web
+  title: 停車資訊服務 API
+  version: 1.0.0
+  description: |
+    提供一組 API 供手機輸入目的地後，自動推薦可用停車場與導航路徑
+
+host: 127.0.0.1:5000
+basePath: /
+schemes:
+  - http
+
+produces:
+  - application/json
+
 tags:
-  - name: 測試
-    description: 測試類功能
+  - name: Maps API
+    description: 地圖與地理資訊相關功能
+  - name: TDX API
+    description: 停車場與運輸資料服務
+
 paths:
-  /ping:
+  /maps/ping:
     get:
-      tags:
-        - 測試
-      summary: 測試用的 Ping API
-      description: 回傳 Pong!
-      produces:
-        - application/json
+      summary: 測試連線
+      description: 回傳 pong 表示連線正常
       responses:
         200:
-          description: 成功回傳 Pong!
+          description: 成功回應
           schema:
-            type: string
-            example: Pong!
+            type: object
+            properties:
+              message:
+                type: string
+                example: pong
+
+  /tdx/ping:
+    get:
+      summary: 測試連線
+      description: 回傳 pong 表示連線正常
+      responses:
+        200:
+          description: 成功回應
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: pong
+
+  /maps/geocode:
+    get:
+      tags:
+        - Maps API
+      summary: 地址轉經緯度
+      description: 根據輸入地點取得經緯度
+      parameters:
+        - in: query
+          name: place
+          type: string
+          required: true
+          description: 查詢的地址（如「台北車站」）
+      responses:
+        200:
+          description: 查詢成功
+          schema:
+            type: object
+            properties:
+              place:
+                type: string
+                example: 台北車站
+              lat:
+                type: string
+                example: "25.0478"
+              lon:
+                type: string
+                example: "121.5170"
+        400:
+          description: 請求缺少參數
+        404:
+          description: 查無結果
+
+  /tdx/parking:
+    get:
+      tags:
+        - TDX API
+      summary: 查詢附近停車場資訊
+      description: 根據座標查詢半徑內的停車場資訊（剩餘車位、收費等）
+      parameters:
+        - in: query
+          name: lat
+          type: string
+          required: true
+          description: 緯度
+        - in: query
+          name: lon
+          type: string
+          required: true
+          description: 經度
+        - in: query
+          name: radius
+          type: integer
+          default: 500
+          required: false
+          description: 查詢半徑（公尺）
+      responses:
+        200:
+          description: 查詢成功
+          schema:
+            type: object
+            properties:
+              parking_lots:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: XX 停車場
+                    available_spaces:
+                      type: integer
+                      example: 12
+                    price:
+                      type: string
+                      example: 每小時 30 元
+                    lat:
+                      type: string
+                      example: "25.0480"
+                    lon:
+                      type: string
+                      example: "121.5160"
+        400:
+          description: 缺少經緯度參數
+        500:
+          description: 系統錯誤或 TDX 無法取得資料
+
+  /maps/route:
+    get:
+      tags:
+        - Maps API
+      summary: 規劃導航路徑
+      description: 提供從目前位置到指定停車場的路線資訊（可選）
+      parameters:
+        - in: query
+          name: from_lat
+          type: string
+          required: true
+          description: 起點緯度
+        - in: query
+          name: from_lon
+          type: string
+          required: true
+          description: 起點經度
+        - in: query
+          name: to_lat
+          type: string
+          required: true
+          description: 終點緯度
+        - in: query
+          name: to_lon
+          type: string
+          required: true
+          description: 終點經度
+      responses:
+        200:
+          description: 路線查詢成功
+          schema:
+            type: object
+            properties:
+              steps:
+                type: array
+                items:
+                  type: string
+                example: ["向北直行 200 公尺", "左轉市民大道", "目的地在右側"]
+        400:
+          description: 缺少起終點參數

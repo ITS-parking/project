@@ -12,9 +12,9 @@
 
 ---
 
-## 📥 Installation
+## 安裝
 
-### ✅ 使用 submodule clone 本專案（包含資料來源）
+### clone 本專案（包含資料來源）
 
 ```bash
 git clone --recurse-submodules https://github.com/your-user/Parking_Info.git
@@ -36,9 +36,31 @@ Swagger UI 文件可於下列位置查看：
 
 http://127.0.0.1:5000/apidocs/
 
-🌐 API 來源
+## 功能
 
-- OpenStreetMap：經緯轉換
+### 支援地點
+
+包含以下地區之室內外停車場
+
+| 中文地區名稱    | 英文代碼           |
+| --------- | -------------- |
+| 臺北市 / 台北市 | Taipei         |
+| 桃園市       | Taoyuan        |
+| 臺中市 / 台中市 | Taichung       |
+| 臺南市 / 台南市 | Tainan         |
+| 高雄市       | Kaohsiung      |
+| 基隆市       | Keelung        |
+| 彰化縣       | ChanghuaCounty |
+| 雲林縣       | YunlinCounty   |
+| 屏東縣       | PingtungCounty |
+| 宜蘭縣       | YilanCounty    |
+| 花蓮縣       | HualienCounty  |
+| 金門縣       | KinmenCounty   |
+
+## 🌐 API 來源
+
+- OpenStreetMap - 經緯轉換
 
 - [TDX API](https://tdx.transportdata.tw/api-service/swagger/basic/#/CityCarPark/ParkingApi%20ParkingCityAvailability) - 交通部運輸資料平台：查詢即時停車資訊
 
+- linebot - 使用者介面

@@ -18,7 +18,7 @@
 
 ```bash
 git clone --recurse-submodules https://github.com/ITS-parking/project.git
-cd proejct
+cd project
 ```
 若已經 clone 完但未初始化 submodule，可執行：
 ```bash

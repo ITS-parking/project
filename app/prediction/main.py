@@ -1,12 +1,9 @@
 from data_loader import load_parking_data
-from predictor import train_model
-
-def test(data):
-    print("資料筆數：", len(data))    
-    print(data.head())
+from predictor import *
 
 if __name__ == "__main__":
-    data = load_parking_data()
-    print(type(data))  # 確認是 DataFrame
-    test(data)
-    train_model(data)  # 直接用 load_parking_data 回傳的 DataFrame 訓練
+    df = load_parking_data()
+    models = train_models_by_parking_lot(df)
+
+    # 測試：查詢 001 停車場在 2025-06-14 15:00 的預測
+    predict_availability(models, "030", "2025-06-17 19:00")

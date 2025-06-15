@@ -1,13 +1,12 @@
-from flask import Blueprint, jsonify
+from flask import request , Response 
+import requests , json, jsonify
 
 tdx_bp = Blueprint('tdx_api', __name__, url_prefix='/tdx')
 
+# === test === 
 @tdx_bp.route('/ping', methods=['GET'])
 def pong():
     return jsonify({"message": "it's tdx API"})
-
-from flask import request , Response 
-import requests , json  
 
 # === TDX Token ===
 def get_tdx_token(client_id, client_secret):

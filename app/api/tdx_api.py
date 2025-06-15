@@ -1,7 +1,10 @@
-from flask import request , Response 
-import requests , json, jsonify
+from flask import request, Response, Blueprint, jsonify
+import requests , json, jsonify, os
 
 tdx_bp = Blueprint('tdx_api', __name__, url_prefix='/tdx')
+
+APP_ID = os.getenv("APP_ID")
+APP_KEY = os.getenv("APP_KEY")
 
 # === test === 
 @tdx_bp.route('/ping', methods=['GET'])
@@ -55,8 +58,8 @@ def get_parking_data():
         return jsonify({"error": "lat 與 lon 必須為數字"}), 400
 
     token = get_tdx_token(
-        client_id=REMOVED,
-        client_secret=REMOVED
+        client_id=APP_ID,
+        client_secret=APP_KEY
     )
     headers = {"Authorization": f"Bearer {token}"}
     city = get_tdx_city_from_coords(lat, lon)

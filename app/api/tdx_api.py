@@ -56,8 +56,8 @@ def get_parking_data():
         return jsonify({"error": "lat 與 lon 必須為數字"}), 400
 
     token = get_tdx_token(
-        client_id=REMOVED,
-        client_secret=REMOVED
+        client_id="sssun-09d597db-5ec8-446e",
+        client_secret="8ffe4bd6-dc2e-40e1-8f9e-2c5d62e13ab1"
     )
     headers = {"Authorization": f"Bearer {token}"}
     city = get_tdx_city_from_coords(lat, lon)

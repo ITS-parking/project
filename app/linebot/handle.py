@@ -5,6 +5,8 @@ import requests
 
 from app.linebot.reply_utils import make_parking_flex_message
 
+
+
 def handle_text_message(event, line_bot_api):
     text = event.message.text.strip()
 
@@ -32,7 +34,7 @@ def handle_text_message(event, line_bot_api):
             "lon": end_data["lon"]
         })
 
-        parking_list = parking_resp.json().get("data", [])
+        parking_list = parking_resp.json().get("parking_lots", [])
 
         if not parking_list:
             reply = TextSendMessage(text="找不到附近的停車場 🅿️")

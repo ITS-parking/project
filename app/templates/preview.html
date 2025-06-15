@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ITS 停車查詢 Preview</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f2f2f2;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #34495e;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .form-group input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .form-group button {
+      padding: 0.75rem 1.5rem;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .form-group button:hover {
+      background: #2980b9;
+    }
+
+    .card {
+      background: #ecf0f1;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 6px solid #3498db;
+      border-radius: 4px;
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+    }
+
+    .card p {
+      margin: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ITS 停車場資訊系統 - 預覽畫面</h1>
+  </header>
+
+  <div class="container">
+    <h2>🔍 查詢停車場</h2>
+    <div class="form-group">
+      <input type="text" id="start" placeholder="輸入起點（如：台北車站）" />
+      <input type="text" id="end" placeholder="輸入目的地（如：信義威秀）" />
+      <button onclick="search()">查詢</button>
+    </div>
+
+    <div id="results">
+      <!-- 停車場結果會顯示在這裡 -->
+    </div>
+  </div>
+
+  <script>
+    function search() {
+      const start = document.getElementById("start").value;
+      const end = document.getElementById("end").value;
+
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      if (!start || !end) {
+        alert("請輸入起點與目的地！");
+        return;
+      }
+
+      // 模擬結果（可替換成實際 fetch API）
+      const mockData = [
+        { name: "信義停車場 A", status: "空位約 20 格", distance: "200 公尺" },
+        { name: "信義地下停車場 B", status: "已滿", distance: "500 公尺" },
+        { name: "信義廣場停車場 C", status: "空位約 10 格", distance: "350 公尺" },
+      ];
+
+      mockData.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <h3>${item.name}</h3>
+          <p>狀態：${item.status}</p>
+          <p>距離：${item.distance}</p>
+        `;
+        results.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

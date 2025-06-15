@@ -4,16 +4,16 @@ from flask import Blueprint, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, LocationMessage
-
 from app.linebot.handle import handle_text_message, handle_location_message
-
 import os
 
 linebot_bp = Blueprint('linebot', __name__)
 
 # 載入你的 LINE Channel Access Token 與 Secret（建議用 .env 管理）
-LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
-LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
+# LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
+# LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
+LINE_CHANNEL_ACCESS_TOKEN = "1MdV1m9zpeP6fvXKYAbaxsCNm9zKUG57N/vLb4WUEktnPNQuU+HaPZ+DmaV06FN+OjXr6CHU174s9TyLzCGx3JMDk19QQJy3QGxV5Ksj4D21uwAYlggLx3nMukEw0hjU/8hg9DsfgJ8adhKBnpO3nQdB04t89/1O/w1cDnyilFU="
+LINE_CHANNEL_SECRET = "53bc630fceb8c3462f76096bd500c7b7"
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)

@@ -19,6 +19,8 @@ tags:
     description: 地圖與地理資訊相關功能
   - name: TDX API
     description: 停車場與運輸資料服務
+  - name: Prediction API
+    description: 停車場未來一周預測
 
 paths:
   /maps/ping:
@@ -220,3 +222,56 @@ paths:
                 example: ["向北直行 200 公尺", "左轉市民大道", "目的地在右側"]
         400:
           description: 缺少起終點參數
+  /predict/ping:
+    get:
+      summary: API 偵測測試
+      description: 確認 Prediction API 是否運作正常。
+      responses:
+        '200':
+          description: 成功回應
+          content:
+            application/json:
+              example:
+                message: "it's prediction API"
+
+  /predict/predict:
+    get:
+      tags:
+        - Prediction API
+      summary: 車位數預測
+      description: 根據指定的 `carpark_id` 與 `date` 時間預測未來車位數（支援未來 7 天）。
+      parameters:
+        - name: carpark_id
+          in: query
+          required: true
+          description: 停車場代碼，例如 `001`
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          description: 要預測的時間（格式：YYYY-MM-DD HH:mm:ss）
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 成功回應預測結果
+          content:
+            application/json:
+              example:
+                carpark_id: "001"
+                requested_time: "2025-06-21 14:00:00"
+                predicted_availability: 420
+        '400':
+          description: 參數錯誤或缺少
+          content:
+            application/json:
+              example:
+                error: "請提供 carpark_id 與 date 參數"
+        '404':
+          description: 無此 carpark_id 的模型
+          content:
+            application/json:
+              example:
+                error: "找不到 001 的模型"

@@ -1,5 +1,8 @@
 from flask import request, Response, Blueprint, jsonify
-import requests , json, jsonify, os
+import requests , json , os
+from flask import jsonify
+from app.utils.geocode_utils import get_coords_from_place
+
 
 tdx_bp = Blueprint('tdx_api', __name__, url_prefix='/tdx')
 
@@ -21,7 +24,35 @@ def get_tdx_token(client_id, client_secret):
         "client_secret": client_secret
     }
     response = requests.post(url, headers=headers, data=data)
+
+    if response.status_code != 200:
+        print("[ERROR] Token 取得失敗:", response.status_code, response.text)
+        
     return response.json().get("access_token")
+
+@tdx_bp.route("/parking_by_place", methods=["GET"])
+def get_parking_by_place():
+    place = request.args.get("place")
+    
+    if not place:
+        return jsonify({"error": "請提供 place 參數"}), 400
+
+    # 使用 utils 裡的共用函式轉換地址成經緯度
+    coords, error = get_coords_from_place(place)
+    if error:
+        return jsonify({"error": error}), 404
+    print(coords)
+    lat, lon = coords
+
+    # 將經緯度轉成字串形式，模擬原本 request.args 的參數
+    request.args = request.args.copy()
+    request.args = request.args.to_dict()
+    request.args["lat"] = str(lat)
+    request.args["lon"] = str(lon)
+
+    # 重用原有邏輯（呼叫 get_parking_data）
+    return get_parking_data()
+
 
 # === 經緯度轉城市 ===
 def get_tdx_city_from_coords(lat, lon):
@@ -31,6 +62,7 @@ def get_tdx_city_from_coords(lat, lon):
     if resp.status_code == 200:
         data = resp.json()
         city_name = data.get("address", {}).get("city", "")
+
         city_map = {
             "臺北市": "Taipei", "台北市": "Taipei",
             "桃園市": "Taoyuan", "臺中市": "Taichung", "台中市": "Taichung",
@@ -39,6 +71,11 @@ def get_tdx_city_from_coords(lat, lon):
             "屏東縣": "PingtungCounty", "宜蘭縣": "YilanCounty", "花蓮縣": "HualienCounty",
             "金門縣": "KinmenCounty"
         }
+        converted_city = city_map.get(city_name, "")
+        print(f"[DEBUG] Nominatim city_name：{city_name}")
+
+        print(f"[DEBUG] TDX 需要的 city 轉換後：{converted_city}")
+
         return city_map.get(city_name, "")
     return ""
 
@@ -46,7 +83,8 @@ def get_tdx_city_from_coords(lat, lon):
 def get_parking_data():
     lat = request.args.get('lat')
     lon = request.args.get('lon')
-    radius = int(request.args.get('radius', 500))
+    #radius = int(request.args.get('radius', 1000))
+    radius = 1000
 
     if not lat or not lon:
         return jsonify({"error": "請提供經緯度 lat 與 lon"}), 400
@@ -71,11 +109,14 @@ def get_parking_data():
                  f"%24spatialFilter=nearby({lat},{lon},{radius})&%24format=JSON"
     nearby_resp = requests.get(nearby_url, headers=headers)
     nearby_data = nearby_resp.json() if nearby_resp.status_code == 200 else []
+    print(f"[DEBUG] Nearby 停車場筆數：{len(nearby_data)}")  # ✅ 印出 nearby 停車場筆數
 
     # 查詢剩餘空位
     avail_url = f"https://tdx.transportdata.tw/api/basic/v1/Parking/OffStreet/ParkingAvailability/City/{city}?%24format=JSON"
     avail_resp = requests.get(avail_url, headers=headers)
     avail_data = avail_resp.json().get("ParkingAvailabilities", []) if avail_resp.status_code == 200 else []
+    print(f"[DEBUG] 可用停車空位筆數：{len(avail_data)}")
+
     availability_map = {a["CarParkName"]["Zh_tw"]: a for a in avail_data}
 
     result = []

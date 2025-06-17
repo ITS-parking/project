@@ -20,7 +20,7 @@ def handle_text_message(event, line_bot_api):
                 reply = TextSendMessage(text="目前沒有可預測的停車場資料")
             else:
                 formatted = "\n".join([f"{p['carpark_id']} - {p['carpark_name']}" for p in parking_names])
-                reply = TextSendMessage(text=f"📊 可預測停車場：\n{formatted}")
+                reply = TextSendMessage(text=f"📊 可預測停車場：\n{formatted}\n複製以上停車場資料並加上日期時間，例如: 2025-06-21 17:00即可預測")
         except Exception as e:
             reply = TextSendMessage(text=f"無法取得預測列表：{str(e)}")
         line_bot_api.reply_message(event.reply_token, reply)
@@ -43,8 +43,18 @@ def handle_text_message(event, line_bot_api):
             if "predicted_availability" in result:
                 name = result.get("carpark_name", carpark_id)
                 avail = result["predicted_availability"]
+                total = result.get("total_spaces", 1)  
+                ratio = round(avail / total * 100)
+                # 判斷燈號
+                if ratio < 5:
+                    status_light = "🔴"
+                elif ratio < 10:
+                    status_light = "🟠"
+                else:
+                    status_light = "🟢"
+                
                 reply = TextSendMessage(
-                    text=f"⏰ {datetime_str}\n📍 {name}\n🅿️ 預測可用車位：{avail} 格"
+                    text=f"⏰ {datetime_str}\n📍 {name}\n🅿️ 預測可用車位：{avail} 格（{status_light}總佔比約 {ratio}%）"
                 )
             else:
                 reply = TextSendMessage(text=result.get("error", "預測失敗"))

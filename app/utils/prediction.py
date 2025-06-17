@@ -1,6 +1,5 @@
 from prophet import Prophet
 import pandas as pd
-import matplotlib.pyplot as plt
 
 def train_models_by_parking_lot(df):
     models = {}
@@ -36,3 +35,4 @@ def predict_availability(models, carpark_id, date_str):
     nearest_row = forecast.loc[(forecast["ds"] - date).abs().idxmin()]
     print(f"✅ {carpark_id} 在 {date_str} 預測可用車位為：{int(nearest_row['yhat'])}")
     return nearest_row
+

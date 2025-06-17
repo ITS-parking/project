@@ -134,6 +134,51 @@ paths:
           description: 缺少經緯度參數
         500:
           description: 系統錯誤或 TDX 無法取得資料
+          
+  /tdx/parking_by_place:
+    get:
+      tags:
+        - TDX API
+      summary: 地址查詢附近停車場資訊
+      description: 根據輸入地址自動轉換經緯度並查詢附近停車場資訊（剩餘車位、收費等）
+      parameters:
+        - in: query
+          name: place
+          type: string
+          required: true
+          description: 查詢的地址（如「台北車站」）
+      responses:
+        200:
+          description: 查詢成功
+          schema:
+            type: object
+            properties:
+              parking_lots:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: XX 停車場
+                    available_spaces:
+                      type: integer
+                      example: 12
+                    price:
+                      type: string
+                      example: 每小時 30 元
+                    lat:
+                      type: string
+                      example: "25.0480"
+                    lon:
+                      type: string
+                      example: "121.5160"
+        400:
+          description: 缺少地址參數
+        404:
+          description: 查無該地址經緯度
+        500:
+          description: 系統錯誤或 TDX 無法取得資料
 
   /maps/route:
     get:

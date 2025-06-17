@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, Response
 import requests
 import json
+from app.utils.geocode_utils import get_coords_from_place
 
 map_bp = Blueprint('maps_api', __name__, url_prefix='/maps')
 
@@ -14,30 +15,13 @@ def geocode():
     if not place:
         return jsonify({"error": "請提供 place 參數"}), 400
 
-    url = "https://nominatim.openstreetmap.org/search"
-    params = {
-        "q": place,
-        "format": "json",
-        "limit": 1
-    }
-    headers = {"User-Agent": "ITS-Parking-Info"}
+    coords, error = get_coords_from_place(place)
+    if error:
+        return jsonify({"error": error}), 404
 
-    try:
-        response = requests.get(url, params=params, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-
-        if not data:
-            return jsonify({"error": "查無資料"}), 404
-
-        return Response(
-            json.dumps({
-                "place": place,
-                "lat": data[0]["lat"],
-                "lon": data[0]["lon"]
-            }, ensure_ascii=False),
-            content_type="application/json; charset=utf-8"
-        )
-
-    except requests.RequestException as e:
-        return jsonify({"error": str(e)}), 500
+    lat, lon = coords
+    return jsonify({
+        "place": place,
+        "lat": lat,
+        "lon": lon
+    })

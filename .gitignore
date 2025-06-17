@@ -30,3 +30,7 @@ venv/
 
 # vscode 
 .vscode
+
+# secret 
+.env
+

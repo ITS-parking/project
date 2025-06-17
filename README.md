@@ -17,8 +17,8 @@
 ### clone 本專案（包含資料來源）
 
 ```bash
-git clone --recurse-submodules https://github.com/your-user/Parking_Info.git
-cd Parking_Info
+git clone --recurse-submodules https://github.com/ITS-parking/project.git
+cd project
 ```
 若已經 clone 完但未初始化 submodule，可執行：
 ```bash

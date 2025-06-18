@@ -5,9 +5,15 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, LocationMessage
 from app.linebot.handle import handle_text_message, handle_location_message
+from dotenv import load_dotenv
 import os
 
 linebot_bp = Blueprint('linebot', __name__)
+
+load_dotenv()
+LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
+LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
+
 
 # 載入你的 LINE Channel Access Token 與 Secret（建議用 .env 管理）
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")

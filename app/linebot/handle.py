@@ -1,20 +1,8 @@
 # app/linebot/handle.py
-
 from linebot.models import TextSendMessage
+from app.linebot.reply_utils import make_parking_flex_message
 import requests
-<<<<<<< HEAD
-
-from app.linebot.reply_utils import make_parking_flex_message
-
-def handle_text_message(event, line_bot_api):
-    text = event.message.text.strip()
-
-=======
 import re
-
-from app.linebot.reply_utils import make_parking_flex_message
-
-
 
 def handle_text_message(event, line_bot_api):
     text = event.message.text.strip()
@@ -73,7 +61,6 @@ def handle_text_message(event, line_bot_api):
         line_bot_api.reply_message(event.reply_token, reply)
         return
     
->>>>>>> origin/linebot
     # 嘗試解析格式：「起點 到 終點」
     if "到" not in text:
         reply = TextSendMessage(text="請使用『起點 到 終點』的格式，例如：台大 到 台北101")

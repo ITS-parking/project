@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, Response
 import requests
 import json
+from app.utils.geocode_utils import get_coords_from_place
 
 map_bp = Blueprint('maps_api', __name__, url_prefix='/maps')
 
@@ -13,7 +14,6 @@ def geocode():
     place = request.args.get("place")
     if not place:
         return jsonify({"error": "請提供 place 參數"}), 400
-
     url = "https://nominatim.openstreetmap.org/search"
     params = {
         "q": place,

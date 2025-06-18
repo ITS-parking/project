@@ -28,5 +28,8 @@ __pycache__/
 .venv/
 venv/
 
-# vscode 
+# vscode
 .vscode
+
+# secret 
+.env

@@ -4,9 +4,7 @@ from flask import Blueprint, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, LocationMessage
-
 from app.linebot.handle import handle_text_message, handle_location_message
-
 import os
 
 linebot_bp = Blueprint('linebot', __name__)

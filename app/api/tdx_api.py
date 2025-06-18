@@ -1,13 +1,18 @@
-from flask import Blueprint, jsonify
+from flask import request, Response, Blueprint, jsonify
+import requests , json , os
+from flask import jsonify
+from app.utils.geocode_utils import get_coords_from_place
+from flask import request , Response 
+import requests , json 
 
 tdx_bp = Blueprint('tdx_api', __name__, url_prefix='/tdx')
+
+APP_ID = os.getenv("APP_ID")
+APP_KEY = os.getenv("APP_KEY")
 
 @tdx_bp.route('/ping', methods=['GET'])
 def pong():
     return jsonify({"message": "it's tdx API"})
-
-from flask import request , Response 
-import requests , json  
 
 # === TDX Token ===
 def get_tdx_token(client_id, client_secret):
@@ -20,6 +25,35 @@ def get_tdx_token(client_id, client_secret):
     }
     response = requests.post(url, headers=headers, data=data)
     return response.json().get("access_token")
+'''
+    if response.status_code != 200:
+        print("[ERROR] Token 取得失敗:", response.status_code, response.text)
+        
+    return response.json().get("access_token")
+
+@tdx_bp.route("/parking_by_place", methods=["GET"])
+def get_parking_by_place():
+    place = request.args.get("place")
+    
+    if not place:
+        return jsonify({"error": "請提供 place 參數"}), 400
+
+    # 使用 utils 裡的共用函式轉換地址成經緯度
+    coords, error = get_coords_from_place(place)
+    if error:
+        return jsonify({"error": error}), 404
+    print(coords)
+    lat, lon = coords
+
+    # 將經緯度轉成字串形式，模擬原本 request.args 的參數
+    request.args = request.args.copy()
+    request.args = request.args.to_dict()
+    request.args["lat"] = str(lat)
+    request.args["lon"] = str(lon)
+
+    # 重用原有邏輯（呼叫 get_parking_data）
+    return get_parking_data()
+'''
 
 # === 經緯度轉城市 ===
 def get_tdx_city_from_coords(lat, lon):
